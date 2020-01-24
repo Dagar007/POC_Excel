@@ -1,0 +1,13 @@
+.btn-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.btn-wrapper i{
+    margin-right: 5px;
+}
+.action-buttons-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
