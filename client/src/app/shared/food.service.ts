@@ -1,6 +1,10 @@
 import { Injectable } from "@angular/core";
-import {HttpClient} from "@angular/common/http"
+import {HttpClient, HttpParams} from "@angular/common/http"
 import { environment } from "src/environments/environment";
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators'
+import { Food } from '../model/food';
+import { PaginatedResult } from '../model/pagination';
 
 @Injectable({
   providedIn: "root"
@@ -18,7 +22,30 @@ export class FoodService {
     return this.http.delete(environment.baseUrl+id);
   }
 
-  foodList(){
-    return this.http.get(environment.baseUrl)
+  getCategories() {
+    return this.http.get(environment.baseUrl+'categories');
+  }
+
+  foodList(page?,itemsPerPage?, userParams?): Observable<PaginatedResult<Food[]>>{
+    const paginatedResult: PaginatedResult<Food[]> = new PaginatedResult<Food[]>();
+    let params = new HttpParams();
+    if(page != null && itemsPerPage!= null) {
+      params = params.append('pageNumber', page);
+      params = params.append('pageSize', itemsPerPage);
+    }
+    if(userParams != null){
+      params = params.append('category',userParams.category);
+      params = params.append('name', userParams.nameStartsWith);
+    }
+    return this.http.get<Food[]>(environment.baseUrl, {observe: 'response', params})
+      .pipe(
+        map(response => {
+          paginatedResult.result = response.body;
+          if(response.headers.get('Pagination') != null) {
+            paginatedResult.pagination = JSON.parse(response.headers.get('Pagination'));
+          }
+          return paginatedResult;
+        })
+      );
   }
 }

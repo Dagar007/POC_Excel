@@ -1,0 +1,24 @@
+.btn-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.btn-wrapper i{
+    margin-right: 5px;
+}
+.action-buttons-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.d-flex {
+    display: flex;
+    justify-content: center;
+}
+.filter-status{
+    width: 100%;
+    margin-left: 3rem;;
+    display: flex;
+    justify-content: flex-start;
+    text-align: center;
+}

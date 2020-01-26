@@ -9,5 +9,6 @@ namespace API.DataAccess
         {
         }
         public DbSet<Food> Foods { get; set; }
+        public DbSet<Category> Catgories { get; set; }
     }
 }

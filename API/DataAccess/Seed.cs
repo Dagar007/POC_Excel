@@ -39,6 +39,19 @@ namespace API.DataAccess
                 context.Foods.AddRange(foods);
                 context.SaveChanges();
             }
+            if(!context.Catgories.Any())
+            {
+               var catgories = new List<Category>
+               {
+                   new Category { Value = "Home Made"},
+                   new Category { Value = "Desserts"},
+                   new Category {Value = "Spicy"},
+                   new Category { Value ="Drinks"},
+                   new Category { Value ="Others"}
+               };
+               context.Catgories.AddRange(catgories);
+               context.SaveChanges();
+            }
         }
     }
 }
