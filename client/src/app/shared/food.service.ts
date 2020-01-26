@@ -33,9 +33,11 @@ export class FoodService {
       params = params.append('pageNumber', page);
       params = params.append('pageSize', itemsPerPage);
     }
+    console.log(userParams)
     if(userParams != null){
       params = params.append('category',userParams.category);
       params = params.append('name', userParams.nameStartsWith);
+      params = params.append('orderBy', userParams.orderBy);
     }
     return this.http.get<Food[]>(environment.baseUrl, {observe: 'response', params})
       .pipe(

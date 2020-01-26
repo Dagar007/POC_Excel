@@ -24,16 +24,29 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<PagedList<Food>>> List([FromQuery] UserParams p)
         {
-            var query = _context.Foods.AsQueryable();
-            if(!string.IsNullOrEmpty(p.Name))
+            var query = _context.Foods.OrderBy(q => q.Name.ToLower()).AsQueryable();
+            if (!string.IsNullOrEmpty(p.Name))
             {
                 query = query.Where(x => x.Name.ToLower().StartsWith(p.Name.ToLower()));
             }
-            if(p.Category > 0)
+            if (p.Category > 0)
             {
                 query = query.Where(x => x.Category == p.Category);
             }
-            
+            if (!string.IsNullOrEmpty(p.OrderBy))
+            {
+                switch (p.OrderBy.ToLower())
+                {
+                    case "ingrident1":
+                        query = query.OrderBy(q => q.Ingrident1.ToLower());
+                        break;
+                    default:
+                        query = query.OrderBy(q => q.Name.ToLower());
+                        break;
+
+                }
+            }
+
             var food = await PagedList<Food>.CreateAsync(query, p.PageNumber, p.PageSize);
             Response.AddPagination(food.CurrentPage, food.PageSize, food.TotalCount, food.TotalPages);
 
@@ -89,7 +102,7 @@ namespace API.Controllers
             throw new Exception("Error deleting food");
         }
 
-        
+
         [HttpGet("categories")]
         public async Task<ActionResult<IEnumerable<Category>>> Categories()
         {

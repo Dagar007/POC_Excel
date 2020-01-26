@@ -12,6 +12,7 @@ namespace API.Helper
         }
         public int Category { get; set; }
         public string Name { get; set; }
+        public string OrderBy { get; set; }
         
         
     }

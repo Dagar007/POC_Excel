@@ -39,13 +39,17 @@ export class FoodComponent implements OnInit {
     });
     this.createConnection();
     this.foodList();
+
     this.userParams.category = 0;
-    this.userParams.nameStartsWith = '';
+    this.userParams.nameStartsWith = "";
+    this.userParams.orderBy = "name";
+   
   }
 
   resetFilters() {
     this.userParams.category = 0;
-    this.userParams.nameStartsWith = '';
+    this.userParams.nameStartsWith = "";
+    this.userParams.orderBy = "name";
     this.loadFood();
   }
 
@@ -57,7 +61,11 @@ export class FoodComponent implements OnInit {
   loadFood() {
     this.foodForm.clear();
     this.foodService
-      .foodList(this.pagination.currentPage, this.pagination.itemsPerPage, this.userParams)
+      .foodList(
+        this.pagination.currentPage,
+        this.pagination.itemsPerPage,
+        this.userParams
+      )
       .subscribe((res: PaginatedResult<Food[]>) => {
         this.pagination = res.pagination;
         (res.result as []).forEach((food: any) => {
@@ -171,9 +179,9 @@ export class FoodComponent implements OnInit {
   recordSubmit(fg: FormGroup) {
     if (fg.value.id == "") {
       fg.patchValue({ id: uuid() });
-      fg.patchValue({category: +fg.value.category})
+      fg.patchValue({ category: +fg.value.category });
       fg.disable();
-      
+
       this._hubConnection.invoke("SendAdd", fg.value);
       this.showNotification("insert");
     } else if (!fg.value.editMode) {
@@ -321,8 +329,11 @@ export class FoodComponent implements OnInit {
             { value: updatedFood.name, disabled: !updatedFood.editMode },
             Validators.required
           ],
-          category: [{ value: updatedFood.category, disabled: !updatedFood.editMode },
-            , Validators.required],
+          category: [
+            { value: updatedFood.category, disabled: !updatedFood.editMode },
+            ,
+            Validators.required
+          ],
           ingrident1: [
             { value: updatedFood.ingrident1, disabled: !updatedFood.editMode },
             Validators.required

@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { PaginationModule } from 'ngx-bootstrap';
+import { ButtonsModule } from 'ngx-bootstrap';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -19,6 +20,7 @@ import { FoodComponent } from './food/food.component';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    ButtonsModule.forRoot(),
     PaginationModule.forRoot(),
     ReactiveFormsModule
   ],
