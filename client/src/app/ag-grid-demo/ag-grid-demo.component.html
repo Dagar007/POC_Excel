@@ -1,0 +1,22 @@
+
+<div class="grid-table">
+    <!-- (cellClicked)="onCellClicked($event)" -->
+    <ag-grid-angular
+    #myGrid
+    style="width: 100%; height: 500px;"
+    class="ag-theme-balham"
+    (gridReady)="onGridReady($event)"
+    [rowData]="rowData"
+    [columnDefs]="columnDefs"
+    [defaultColDef]="defaultColDef"
+    (cellEditingStarted) = "onCellEditingStarted($event)"
+    (cellEditingStopped)="onCellEditingStoped($event)"
+    >
+</ag-grid-angular>
+<button (click)="onBtWhich()">which ()</button>
+<button (click)="updateRow()">UpdateRow</button>
+<button (click)="updateCell()">UpdateCell</button>
+<button (click)="updateAllRow()">UpdateAllRow</button>
+<button (click)="clear()">Clear</button>
+</div>
+

@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormArray, Validators, FormGroup } from "@angular/forms";
 import { FoodService } from "../shared/food.service";
 import { v4 as uuid } from "uuid";
+import { environment } from "src/environments/environment";
 import {
   HubConnection,
   HubConnectionBuilder,
@@ -194,7 +195,6 @@ export class FoodComponent implements OnInit {
       });
       fg.patchValue({ editMode: !fg.value.editMode });
     } else {
-      console.log(fg.value);
       this._hubConnection
         .invoke("SendUpdatedFood", {
           id: fg.value.id,
@@ -256,7 +256,7 @@ export class FoodComponent implements OnInit {
 
   createConnection() {
     this._hubConnection = new HubConnectionBuilder()
-      .withUrl("http://localhost:5000/edit")
+      .withUrl(environment.baseUrl+ "edit")
       .build();
     this._hubConnection
       .start()

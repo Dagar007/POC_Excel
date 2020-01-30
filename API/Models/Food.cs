@@ -14,6 +14,7 @@ namespace API.Models
         public string Ingrident5 { get; set; }
         public string Ingrident6 { get; set; }
         public bool EditMode { get; set; }
+        public string EditField { get; set; }
   
     }
 }

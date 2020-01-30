@@ -13,17 +13,17 @@ export class FoodService {
   constructor(private http:HttpClient) {}
 
   postFood(formData) {
-    return this.http.post(environment.baseUrl, formData);
+    return this.http.post(environment.baseUrl +'api/food/', formData);
   }
   putFood(id,formData) {
-    return this.http.put(environment.baseUrl + id, formData);
+    return this.http.put(environment.baseUrl+'api/food/' + id, formData);
   }
   deleteFood(id) {
-    return this.http.delete(environment.baseUrl+id);
+    return this.http.delete(environment.baseUrl+'api/food/'+id);
   }
 
   getCategories() {
-    return this.http.get(environment.baseUrl+'categories');
+    return this.http.get(environment.baseUrl+'api/food/'+'categories');
   }
 
   foodList(page?,itemsPerPage?, userParams?): Observable<PaginatedResult<Food[]>>{
@@ -33,13 +33,12 @@ export class FoodService {
       params = params.append('pageNumber', page);
       params = params.append('pageSize', itemsPerPage);
     }
-    console.log(userParams)
     if(userParams != null){
       params = params.append('category',userParams.category);
       params = params.append('name', userParams.nameStartsWith);
       params = params.append('orderBy', userParams.orderBy);
     }
-    return this.http.get<Food[]>(environment.baseUrl, {observe: 'response', params})
+    return this.http.get<Food[]>(environment.baseUrl+'api/food/', {observe: 'response', params})
       .pipe(
         map(response => {
           paginatedResult.result = response.body;

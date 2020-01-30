@@ -25,25 +25,40 @@ namespace API
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureDevelopmentServices(IServiceCollection services)
+        {
+            services.AddDbContextPool<DataContext>(opt =>
+            {
+                opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
+            });
+            ConfigureServices(services);
+        }
+        public void ConfigureProductionServices(IServiceCollection services)
+        {
+            services.AddDbContextPool<DataContext>(opt =>
+            {
+                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+            });
+            ConfigureServices(services);
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
             services.AddSignalR();
-            services.AddDbContextPool<DataContext>(opt => {
-                opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
-            });
-            services.AddCors(opt => {
-               opt.AddPolicy( "CorsPolicy", policy => {
+
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
                     policy.AllowAnyHeader()
                     .AllowAnyMethod()
                     .WithOrigins("http://localhost:4200").AllowCredentials();
                 });
             });
-           
+
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -51,7 +66,7 @@ namespace API
                 app.UseDeveloperExceptionPage();
             }
 
-           app.UseDefaultFiles();
+            app.UseDefaultFiles();
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -63,6 +78,8 @@ namespace API
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<EditHub>("/edit");
+                endpoints.MapHub<AGGridHub>("/agedit");
+                endpoints.MapFallbackToController("Index", "Fallback");
             });
         }
     }

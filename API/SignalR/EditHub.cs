@@ -13,7 +13,7 @@ namespace API.SignalR
         {
             _dataContext = dataContext;
         }
-        public async Task SendEdit(EditDto edit)
+        public async Task SendEdit(EditReceiveDto edit)
         {
             await Clients.Others.SendAsync("ReceiveEdit", edit.Id);
         }
@@ -61,7 +61,7 @@ namespace API.SignalR
         }
 
 
-        public async Task SendEditComplete(EditDto edit)
+        public async Task SendEditComplete(EditReceiveDto edit)
         {
             await Clients.Others.SendAsync("ReceiveEditComplete", edit.Id);
         }

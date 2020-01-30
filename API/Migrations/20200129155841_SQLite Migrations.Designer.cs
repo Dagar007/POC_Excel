@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200126055431_catrgory table added")]
-    partial class catrgorytableadded
+    [Migration("20200129155841_SQLite Migrations")]
+    partial class SQLiteMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -25,7 +25,7 @@ namespace API.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -40,6 +40,9 @@ namespace API.Migrations
 
                     b.Property<int>("Category")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("EditField")
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("EditMode")
                         .HasColumnType("INTEGER");
