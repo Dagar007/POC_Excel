@@ -35,7 +35,7 @@ namespace API.SignalR
 
          public async Task SendUpdatedFood(UpdateDto updatedFood)
         {
-            var food = await _dataContext.Foods.FindAsync(updatedFood.Id);
+            var food = await _context.Foods.FindAsync(updatedFood.Id);
             if (food == null)
                 throw new Exception("food item is not present");
             food.Name = updatedFood.Name ?? food.Name;
@@ -46,9 +46,10 @@ namespace API.SignalR
             food.Ingrident4 = updatedFood.Ingrident4 ?? food.Ingrident4;
             food.Ingrident5 = updatedFood.Ingrident5 ?? food.Ingrident5;
             food.Ingrident6 = updatedFood.Ingrident6 ?? food.Ingrident6;
+            food.EditField = updatedFood.EditField ?? food.EditField;
+            food.EditMode = updatedFood.EditMode;
 
-
-            var success = await _dataContext.SaveChangesAsync() >= 0;
+            var success = await _context.SaveChangesAsync() >= 0;
             if (success)
             {
                 await Clients.All.SendAsync("RecieveUpdatedFood", updatedFood);

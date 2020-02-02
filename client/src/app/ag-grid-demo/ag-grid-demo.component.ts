@@ -7,7 +7,8 @@ import {
 import { FoodService } from "../shared/food.service";
 import { AgGridCellCustomComponent } from "../ag-grid-cell-custom/ag-grid-cell-custom.component";
 import { environment } from "src/environments/environment";
-import { CompileShallowModuleMetadata } from "@angular/compiler";
+import { ActivatedRoute } from "@angular/router";
+import { AgDropdownRendererComponent } from "../ag-dropdown-renderer/ag-dropdown-renderer.component";
 
 @Component({
   selector: "app-ag-grid-demo",
@@ -17,77 +18,106 @@ import { CompileShallowModuleMetadata } from "@angular/compiler";
 export class AgGridDemoComponent implements OnInit {
   private gridApi;
   private gridColumnApi;
-  //private defaultColDef;
-  private sortingOrder;
+  private columnDefs;
+  private defaultColDef;
   private editingRowIndex;
   private _hubConnection: HubConnection;
   private itemId: string;
+  private categoriesName = {}
+  private categories;
 
-  columnDefs = [
-    {
-      headerName: "Name",
-      field: "name",
-    },
-    {
-      headerName: "Category",
-      field: "category"
-    },
-    {
-      headerName: "Ingrident 1",
-      field: "ingrident1"
-    },
-    {
-      headerName: "Ingrident 2",
-      field: "ingrident2"
-    },
-    {
-      headerName: "Ingrident 3",
-      field: "ingrident3"
-    },
-    {
-      headerName: "Ingrident 4",
-      field: "ingrident4"
-    },
-    {
-      headerName: "Ingrident 5",
-      field: "ingrident5"
-    },
-    {
-      headerName: "Ingrident 6",
-      field: "ingrident6",
-      sortable: true,
-      filter: true
-    },
-    {
-      headerName: "Edit Mode",
-      field: "editMode",
-      hidden: true
-    },
-    {
-      headerName: "Edit Field",
-      field: "editField",
-      hidden: true
-    }
-  ];
-
-  defaultColDef = {
-    sortable: true,
-    filter: true,
-    resizable: true,
-    editable: this.calculateEditStatus.bind(this),
-    cellRendererFramework: AgGridCellCustomComponent
-  };
-  
   rowData: any;
 
-  constructor(private foodService: FoodService) {}
+  constructor(
+    private foodService: FoodService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit() {
     this.createConnection();
+
+    this.route.data.subscribe(data => {
+      this.categories = data["categories"];
+    });
+    this.route.data.subscribe(data => {
+      this.rowData = data["foods"].result;
+    });
+    this.categories.forEach(item => {
+      this.categoriesName[item.id] = item.value;
+    });
+    this.categoriesName[0] = "Select"
+    console.log(this.categoriesName);
+
+    this.columnDefs = [
+      {
+        headerName: "Name",
+        field: "name",
+        cellRendererFramework: AgGridCellCustomComponent
+      },
+      {
+        headerName: "Category",
+        field: "category",
+        cellEditor: "agSelectCellEditor",
+
+        cellEditorParams: {
+          values: extractValues(this.categoriesName)
+        },
+        valueFormatter: (params) => {
+          return lookupValue(this.categoriesName, params.value);
+        },
+        valueParser: (params) => {
+          return lookupKey(this.categoriesName, params.newValue);
+        }
+      },
+      {
+        headerName: "Ingrident 1",
+        field: "ingrident1",
+        cellRendererFramework: AgGridCellCustomComponent
+      },
+      {
+        headerName: "Ingrident 2",
+        field: "ingrident2",
+        cellRendererFramework: AgGridCellCustomComponent
+      },
+      {
+        headerName: "Ingrident 3",
+        field: "ingrident3",
+        cellRendererFramework: AgGridCellCustomComponent
+      },
+      {
+        headerName: "Ingrident 4",
+        field: "ingrident4",
+        cellRendererFramework: AgGridCellCustomComponent
+      },
+      {
+        headerName: "Ingrident 5",
+        field: "ingrident5",
+        cellRendererFramework: AgGridCellCustomComponent
+      },
+      {
+        headerName: "Ingrident 6",
+        field: "ingrident6",
+        cellRendererFramework: AgGridCellCustomComponent
+      },
+      {
+        headerName: "Edit Mode",
+        field: "editMode"
+      },
+      {
+        headerName: "Edit Field",
+        field: "editField"
+      }
+    ];
+
+    this.defaultColDef = {
+      sortable: true,
+      filter: true,
+      resizable: true,
+      editable: this.calculateEditStatus.bind(this)
+    };
   }
 
   calculateEditStatus(params) {
-     console.log(params);
     if (params.data.editField !== params.colDef.field) {
       return true;
     } else {
@@ -98,20 +128,17 @@ export class AgGridDemoComponent implements OnInit {
   onGridReady(params: any) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-    
+
     this.gridColumnApi.setColumnVisible("editMode", false);
     this.gridColumnApi.setColumnVisible("editField", false);
+
+   
+
     
-    this.foodService.foodList().subscribe((data: any) => {
-      this.rowData = data.result;
-    });
   }
 
   updateRow() {
-    this.gridApi.forEachNode(function(rowNode, index) {
-      if (rowNode.data.id === "e4760870-7b3f-4600-bbbb-8ed58f3ba829")
-        console.log(rowNode);
-    });
+    this.gridApi.forEachNode(function(rowNode, index) {});
 
     var rowNode = this.gridApi.getRowNode(1);
     rowNode.setData({
@@ -124,9 +151,6 @@ export class AgGridDemoComponent implements OnInit {
   updateCell() {
     var rowNode = this.gridApi.getRowNode(1);
     rowNode.setDataValue("ingrident5", "IN5");
-    // rowNode.setDataValue({
-    //   ingrident5: "In5"
-    // });
   }
   updateAllRow() {
     this.foodService.foodList().subscribe(data => {
@@ -139,38 +163,15 @@ export class AgGridDemoComponent implements OnInit {
 
   onBtWhich() {
     var cellDefs = this.gridApi.getEditingCells();
-    if (cellDefs.length > 0) {
-      var cellDef = cellDefs[0];
-      console.log(
-        "editing cell is: row = " +
-          cellDef.rowIndex +
-          ", col = " +
-          cellDef.column.getId() +
-          ", floating = " +
-          cellDef.rowPinned
-      );
-    } else {
-      console.log("no cells are editing");
-    }
   }
   onCellClicked($event) {
-    // check whether the current row is already opened in edit or not
-    // console.log(this.editingRowIndex  )
-    // console.log($event.rowIndex)
-    // if(this.editingRowIndex != $event.rowIndex) {
-    // console.log('clicked event');
-    // console.log( $event);
     $event.api.startEditingCell({
       rowIndex: $event.rowIndex,
       colKey: $event.column.colId
     });
-    // this.editingRowIndex = $event.rowIndex;
-    //}
   }
 
   onCellEditingStarted($event) {
-    console.log($event);
-    console.log($event.colDef.field);
     this.itemId = $event.data.id;
     this._hubConnection.invoke("SendEdit", {
       id: $event.data.id,
@@ -180,11 +181,28 @@ export class AgGridDemoComponent implements OnInit {
   }
 
   onCellEditingStoped($event) {
-    this._hubConnection.invoke("SendEditComplete", {
-      id: this.itemId,
-      field: $event.value,
-      index: $event.rowIndex
-    });
+    this._hubConnection
+      .invoke("SendUpdatedFood", {
+        id: $event.data.id,
+        name: $event.data.name,
+        category: +$event.data.category,
+        ingrident1: $event.data.ingrident1,
+        ingrident2: $event.data.ingrident2,
+        ingrident3: $event.data.ingrident3,
+        ingrident4: $event.data.ingrident4,
+        ingrident5: $event.data.ingrident5,
+        ingrident6: $event.data.ingrident6,
+        editMode: $event.data.editMode,
+        editField: $event.data.editField,
+        index: $event.rowIndex
+      })
+      .then(() => {
+        this._hubConnection.invoke("SendEditComplete", {
+          id: $event.data.id,
+          field: $event.colDef.field,
+          index: $event.rowIndex
+        });
+      });
   }
 
   clear() {
@@ -202,30 +220,69 @@ export class AgGridDemoComponent implements OnInit {
 
     this._hubConnection.on("ReceiveEdit", (update: any) => {
       var node = this.gridApi.getRowNode(update.index);
-      console.log(update);
-      console.log(node);
       if (node.data.id === update.id) {
         node.setDataValue("editField", update.field);
-
-        // node.setData({
-        //   ...node.data,
-        //   editField: update.field
-        // });
       }
     });
 
     this._hubConnection.on("SendEditComplete", (update: any) => {
-      //console.log(update );
       var node = this.gridApi.getRowNode(update.index);
-      console.log(node);
       if (node.data.id === update.id) {
         node.setDataValue("editField", null);
-        console.log("here also");
-        // node.setData({
-        //   ...node.data,
-        //   editField: null
-        // });
       }
     });
+
+    this._hubConnection.on("RecieveUpdatedFood", (updatedFood: any) => {
+      var node = this.gridApi.getRowNode(updatedFood.index);
+      if (node.data.id === updatedFood.id) {
+        node.setData(updatedFood);
+      }
+    });
+  }
+  // extractMappings(mappings) {
+  //   console.log("called");
+  //   console.log(mappings);
+  //   return Object.keys(mappings);
+  // }
+  // lookupValue(mappings, key) {
+  //   return mappings[key];
+  // }
+  // lookupKey(mappings, name) {
+  //   console.log("called look up key");
+  //   console.log(mappings);
+  //   console.log(name);
+  //   for (var key in mappings) {
+  //     if (mappings.hasOwnProperty(key)) {
+  //       if (name === mappings[key]) {
+  //         console.log(key);
+  //         return name;
+  //       }
+  //     }
+  //   }
+  // }
+}
+
+// var categoriesName = {
+//   "0": "Select",
+//   "1": "Desserts",
+//   "2": "Home Made",
+//   "3": "Spicy",
+//   "4": "Drinks",
+//   "5": "Others"
+// };
+
+function extractValues(mappings) {
+  return Object.keys(mappings);
+}
+function lookupValue(mappings, key) {
+  return mappings[key];
+}
+function lookupKey(mappings, name) {
+  for (var key in mappings) {
+    if (mappings.hasOwnProperty(key)) {
+      if (name === mappings[key]) {
+        return key;
+      }
+    }
   }
 }

@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200129155841_SQLite Migrations")]
-    partial class SQLiteMigrations
+    [Migration("20200201045501_categoryReverted")]
+    partial class categoryReverted
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -22,6 +22,7 @@ namespace API.DataAccess
                         Ingrident4 = "",
                         Ingrident5 = "",
                         Ingrident6 = "",
+                        
 
                     },
                      new Food {
@@ -32,6 +33,7 @@ namespace API.DataAccess
                         Ingrident4 = "",
                         Ingrident5 = "",
                         Ingrident6 = "",
+                        
 
                     },
                 };

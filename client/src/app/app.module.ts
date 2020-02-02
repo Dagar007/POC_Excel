@@ -13,6 +13,9 @@ import { FoodComponent } from './food/food.component';
 import { AgGridDemoComponent } from './ag-grid-demo/ag-grid-demo.component';
 import { AgGridexampleComponent } from './ag-gridexample/ag-gridexample.component';
 import { AgGridCellCustomComponent } from './ag-grid-cell-custom/ag-grid-cell-custom.component';
+import { AgDropdownRendererComponent } from './ag-dropdown-renderer/ag-dropdown-renderer.component';
+import { CategoryResolver } from './_resolver/category.resolver';
+import { ReadyExampleComponent } from './ready-example/ready-example.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +23,9 @@ import { AgGridCellCustomComponent } from './ag-grid-cell-custom/ag-grid-cell-cu
     FoodComponent,
     AgGridDemoComponent,
     AgGridexampleComponent,
-    AgGridCellCustomComponent
+    AgGridCellCustomComponent,
+    AgDropdownRendererComponent,
+    ReadyExampleComponent
   ],
   imports: [
     BrowserModule,
@@ -32,8 +37,8 @@ import { AgGridCellCustomComponent } from './ag-grid-cell-custom/ag-grid-cell-cu
     AgGridModule.withComponents(),
     ReactiveFormsModule
   ],
-  entryComponents: [AgGridCellCustomComponent],
-  providers: [FoodResolver],
+  entryComponents: [AgGridCellCustomComponent, AgDropdownRendererComponent],
+  providers: [FoodResolver, CategoryResolver],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

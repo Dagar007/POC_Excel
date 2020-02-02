@@ -8,11 +8,11 @@ import { ICellRendererAngularComp } from 'ag-grid-angular';
 })
 export class AgGridCellCustomComponent implements OnInit, ICellRendererAngularComp {
   refresh(params: any): boolean {
+    this.params = params;
+    this.cellValue = params.value;
     return true;
   }
-  afterGuiAttached?(params?: import("ag-grid-community").IAfterGuiAttachedParams): void {
-    throw new Error("Method not implemented.");
-  }
+  
   constructor() {}
 
   cellValue: any;

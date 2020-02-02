@@ -10,3 +10,8 @@ export interface Food {
         editMode: boolean,
         message?: string
 }
+
+export interface Category {
+    id: number,
+    value: string
+}

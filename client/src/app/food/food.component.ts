@@ -117,6 +117,7 @@ export class FoodComponent implements OnInit {
       } else {
         this.pagination = data["foods"].pagination;
         (data["foods"].result as []).forEach((food: any) => {
+          console.log(food);
           this.foodForm.push(
             this.fb.group({
               id: [food.id],
@@ -195,11 +196,13 @@ export class FoodComponent implements OnInit {
       });
       fg.patchValue({ editMode: !fg.value.editMode });
     } else {
+      console.log(fg.value);
+      console.log(fg.value.category);
       this._hubConnection
         .invoke("SendUpdatedFood", {
           id: fg.value.id,
           name: fg.value.name,
-          category: +fg.value.category,
+          category:   fg.value.category,
           ingrident1: fg.value.ingrident1,
           ingrident2: fg.value.ingrident2,
           ingrident3: fg.value.ingrident3,

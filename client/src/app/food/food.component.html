@@ -136,7 +136,7 @@
         <div class="td" style="width: 150px">
           <select class="form-control" formControlName="category">
             <option value="0">Select</option>
-            <option *ngFor="let item of categories" value="{{ item.id }}">
+            <option *ngFor="let item of categories" [ngValue]="item.id">
               {{ item.value }}
             </option>
           </select>
