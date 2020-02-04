@@ -1,0 +1,66 @@
+<div class="header-wrapper">
+  <!-- <div *ngIf="params.enableMenu" mat-button
+        #menuButton class="customHeaderMenuButton" 
+        (click)="onMenuClicked($event)">
+        <i class="fa {{params.menuIcon}}"></i>
+    </div>  -->
+
+  <div class="customHeaderLabel">{{params.displayName}}</div>
+  <div
+    *ngIf="params.enableSorting"
+    (click)="onSortRequested('asc', $event)"
+    [ngClass]="ascSort"
+    class="customSortDownLabel"
+  >
+    <i class="fa fa-long-arrow-alt-down"></i>
+  </div>
+  <div
+    *ngIf="params.enableSorting"
+    (click)="onSortRequested('desc', $event)"
+    [ngClass]="descSort"
+    class="customSortUpLabel"
+  >
+    <i class="fa fa-long-arrow-alt-up"></i>
+  </div>
+  <div
+    *ngIf="params.enableSorting"
+    (click)="onSortRequested('', $event)"
+    [ngClass]="noSort"
+    class="customSortRemoveLabel"
+  >
+    <i class="fa fa-times"></i>
+  </div>
+
+  <div>
+    <!-- <button
+      style="width: 3px; height: 3px; margin: 0; padding: 0;"
+      mat-icon-button
+      color="accent"
+      [matMenuTriggerFor]="menu"
+      *ngIf="params.enableMenu"
+    >
+      <mat-icon>favorite</mat-icon>
+    </button> -->
+    <i
+      class="fa {{params.menuIcon}}"
+      [matMenuTriggerFor]="menu"
+      *ngIf="params.enableMenu"
+    ></i>
+    <mat-menu #menu="matMenu">
+      <!-- <ng-template matMenuContent>
+            <mat-checkbox *ngFor="let i of itemsToShowInSelect" mat-menu-item>{{i.name}}</mat-checkbox>
+            <button *ngFor="let i of itemsToShowInSelect" mat-menu-item>{{i.name}}</button> 
+        </ng-template> -->
+
+      <!-- <button mat-menu-item>Item 2</button> -->
+      <mat-form-field>
+        <mat-select [formControl]="toppings" placeholder="Name" multiple>
+          <mat-label>Toppings</mat-label>
+          <mat-option *ngFor="let topping of toppingList" [value]="topping"
+            >{{topping}}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+    </mat-menu>
+  </div>
+</div>

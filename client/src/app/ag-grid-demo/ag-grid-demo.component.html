@@ -7,6 +7,8 @@
       class="ag-theme-balham"
       (gridReady)="onGridReady($event)"
       [rowData]="rowData"
+      [suppressMenuHide]="true"
+      [frameworkComponents]="frameworkComponents"
       [columnDefs]="columnDefs"
       [defaultColDef]="defaultColDef"
       (cellEditingStarted)="onCellEditingStarted($event)"

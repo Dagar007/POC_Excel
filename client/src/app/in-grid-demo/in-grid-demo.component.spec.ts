@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AgGridDemoComponent } from './ag-grid-demo.component';
+import { InGridDemoComponent } from './in-grid-demo.component';
 
-describe('AgGridDemoComponent', () => {
-  let component: AgGridDemoComponent;
-  let fixture: ComponentFixture<AgGridDemoComponent>;
+describe('InGridDemoComponent', () => {
+  let component: InGridDemoComponent;
+  let fixture: ComponentFixture<InGridDemoComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AgGridDemoComponent ]
+      declarations: [ InGridDemoComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AgGridDemoComponent);
+    fixture = TestBed.createComponent(InGridDemoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

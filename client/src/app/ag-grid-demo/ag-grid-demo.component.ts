@@ -4,6 +4,7 @@ import {
   HubConnectionBuilder,
   LogLevel
 } from "@microsoft/signalr";
+import { CustomHeader } from "./custom-header.component";
 import { FoodService } from "../shared/food.service";
 import { AgGridCellCustomComponent } from "../ag-grid-cell-custom/ag-grid-cell-custom.component";
 import { environment } from "src/environments/environment";
@@ -23,8 +24,9 @@ export class AgGridDemoComponent implements OnInit {
   private editingRowIndex;
   private _hubConnection: HubConnection;
   private itemId: string;
-  private categoriesName = {}
+  private categoriesName = {};
   private categories;
+  private frameworkComponents;
 
   rowData: any;
 
@@ -45,27 +47,30 @@ export class AgGridDemoComponent implements OnInit {
     this.categories.forEach(item => {
       this.categoriesName[item.id] = item.value;
     });
-    this.categoriesName[0] = "Select"
-    console.log(this.categoriesName);
+    this.categoriesName[0] = "Select";
 
     this.columnDefs = [
       {
         headerName: "Name",
         field: "name",
+       // headerComponentParams: { menuIcon: "fa-external-link-alt" },
         cellRendererFramework: AgGridCellCustomComponent
       },
       {
         headerName: "Category",
         field: "category",
         cellEditor: "agSelectCellEditor",
+        cellRenderer: this.colorCellRenderer,
+        //headerComponentParams: { menuIcon: "fa-cog" },
 
         cellEditorParams: {
-          values: extractValues(this.categoriesName)
+          values: extractValues(this.categoriesName),
+          cellRenderer: this.colorCellRenderer
         },
-        valueFormatter: (params) => {
+        valueFormatter: params => {
           return lookupValue(this.categoriesName, params.value);
         },
-        valueParser: (params) => {
+        valueParser: params => {
           return lookupKey(this.categoriesName, params.newValue);
         }
       },
@@ -108,9 +113,10 @@ export class AgGridDemoComponent implements OnInit {
         field: "editField"
       }
     ];
-
+    //this.frameworkComponents = { agColumnHeader: CustomHeader };
     this.defaultColDef = {
       sortable: true,
+      headerComponentParams: { menuIcon: "fa-bars" },
       filter: true,
       resizable: true,
       editable: this.calculateEditStatus.bind(this)
@@ -131,10 +137,6 @@ export class AgGridDemoComponent implements OnInit {
 
     this.gridColumnApi.setColumnVisible("editMode", false);
     this.gridColumnApi.setColumnVisible("editField", false);
-
-   
-
-    
   }
 
   updateRow() {
@@ -222,6 +224,16 @@ export class AgGridDemoComponent implements OnInit {
       var node = this.gridApi.getRowNode(update.index);
       if (node.data.id === update.id) {
         node.setDataValue("editField", update.field);
+        this.gridApi.redrawRows();
+      } else
+      // if values have been sorted / filtered, might be proformance a hit in bigger data sets
+      {
+        this.gridApi.forEachNode((rowNode, index) => {
+          if (rowNode.data.id === update.id) {
+            rowNode.setDataValue("editField", update.field);
+            this.gridApi.redrawRows();
+          }
+        });
       }
     });
 
@@ -229,6 +241,16 @@ export class AgGridDemoComponent implements OnInit {
       var node = this.gridApi.getRowNode(update.index);
       if (node.data.id === update.id) {
         node.setDataValue("editField", null);
+        this.gridApi.redrawRows();
+      } else 
+      // if values have been sorted / filtered, might be proformance a hit in bigger data sets
+      {
+        this.gridApi.forEachNode((rowNode, index) => {
+          if (rowNode.data.id === update.id) {
+            rowNode.setDataValue("editField", null);
+            this.gridApi.redrawRows();
+          }
+        });
       }
     });
 
@@ -236,40 +258,39 @@ export class AgGridDemoComponent implements OnInit {
       var node = this.gridApi.getRowNode(updatedFood.index);
       if (node.data.id === updatedFood.id) {
         node.setData(updatedFood);
+      }else 
+      // if values have been sorted / filtered, might be proformance a hit in bigger data sets
+      {
+        this.gridApi.forEachNode((rowNode, index) => {
+          if (rowNode.data.id === updatedFood.id) {
+            rowNode.setData(updatedFood);
+            this.gridApi.redrawRows();
+          }
+        });
       }
     });
   }
-  // extractMappings(mappings) {
-  //   console.log("called");
-  //   console.log(mappings);
-  //   return Object.keys(mappings);
-  // }
-  // lookupValue(mappings, key) {
-  //   return mappings[key];
-  // }
-  // lookupKey(mappings, name) {
-  //   console.log("called look up key");
-  //   console.log(mappings);
-  //   console.log(name);
-  //   for (var key in mappings) {
-  //     if (mappings.hasOwnProperty(key)) {
-  //       if (name === mappings[key]) {
-  //         console.log(key);
-  //         return name;
-  //       }
-  //     }
-  //   }
-  // }
+  colorCellRenderer(params) {
+    if (params.data.editField === params.colDef.field) {
+      return (
+        "<i class='fa fa-lock' aria-hidden='true'></i> </t>" +
+        "<span style='color:" +
+        removeSpaces(params.valueFormatted) +
+        "'>" +
+        params.valueFormatted +
+        "</span>"
+      );
+    } else {
+      return (
+        "<span style='color:" +
+        removeSpaces(params.valueFormatted) +
+        "'>" +
+        params.valueFormatted +
+        "</span>"
+      );
+    }
+  }
 }
-
-// var categoriesName = {
-//   "0": "Select",
-//   "1": "Desserts",
-//   "2": "Home Made",
-//   "3": "Spicy",
-//   "4": "Drinks",
-//   "5": "Others"
-// };
 
 function extractValues(mappings) {
   return Object.keys(mappings);
@@ -285,4 +306,7 @@ function lookupKey(mappings, name) {
       }
     }
   }
+}
+function removeSpaces(str) {
+  return str ? str.replace(/\s/g, "") : str;
 }
