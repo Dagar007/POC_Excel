@@ -6,13 +6,16 @@ import { AgGridDemoComponent } from './ag-grid-demo/ag-grid-demo.component';
 import { CategoryResolver } from './_resolver/category.resolver';
 import { AgGridexampleComponent } from './ag-gridexample/ag-gridexample.component';
 import { InGridDemoComponent } from './in-grid-demo/in-grid-demo.component';
+import { Food1Component } from './food1/food1.component';
+import { DropComponent } from './drop/drop.component';
 
 
 const routes: Routes = [
   {path: '', runGuardsAndResolvers:'always', component: FoodComponent, resolve: {foods: FoodResolver}},
   {path: 'ag', component:AgGridDemoComponent,resolve: {foods: FoodResolver ,categories: CategoryResolver}},
   {path: 'given', component: AgGridexampleComponent},
-  {path: 'in', component: InGridDemoComponent}
+  {path: 'drop', component: DropComponent},
+  {path: 'food',runGuardsAndResolvers:'always', component: Food1Component,resolve: {foods: FoodResolver}}
 ];
 
 @NgModule({

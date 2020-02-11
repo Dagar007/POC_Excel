@@ -7,6 +7,7 @@ using API.Helper;
 using API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace API.Controllers
 {
@@ -15,15 +16,18 @@ namespace API.Controllers
     public class FoodController : ControllerBase
     {
         private readonly DataContext _context;
-        public FoodController(DataContext context)
+         private readonly ILogger<FoodController> _logger;
+        public FoodController(DataContext context, ILogger<FoodController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
 
         [HttpGet]
         public async Task<ActionResult<PagedList<Food>>> List([FromQuery] UserParams p)
         {
+            _logger.LogInformation("FoodController - Info - GET List Method was Hit!");
             var query = _context.Foods.OrderBy(q => q.Name.ToLower()).AsQueryable();
             if (!string.IsNullOrEmpty(p.Name))
             {
@@ -49,6 +53,7 @@ namespace API.Controllers
 
             var food = await PagedList<Food>.CreateAsync(query, p.PageNumber, p.PageSize);
             Response.AddPagination(food.CurrentPage, food.PageSize, food.TotalCount, food.TotalPages);
+            //throw new Exception("Computer says no!");
 
             return Ok(food);
         }
@@ -108,6 +113,25 @@ namespace API.Controllers
         {
             var catgories = await _context.Catgories.ToListAsync();
             return Ok(catgories);
+        }
+        [HttpGet("filter/{field}")]
+        public async Task<ActionResult<IEnumerable<string>>> FilterDropdown(string field)
+        {
+            if(field == "name")
+            {
+              var fieldToReturn = await _context.Foods.Select( f =>
+                  new FilterReturnDto {
+                      Id = f.Id,
+                      Item = f.Name
+                  }
+              ).ToListAsync();
+              return Ok(fieldToReturn);
+            }
+            else 
+            {
+                return NotFound();
+            }
+           
         }
     }
 }

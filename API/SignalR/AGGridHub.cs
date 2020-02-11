@@ -25,12 +25,12 @@ namespace API.SignalR
 
         public async Task SendEditComplete(EditReceiveDto edit)
         {
-            var food = await _context.Foods.FindAsync(edit.Id);
-            if(food == null)
-                throw new Exception("Food is not present in the system");
-            food.EditField = null;
-            await _context.SaveChangesAsync();
-            await Clients.Others.SendAsync("SendEditComplete", edit);
+            // var food = await _context.Foods.FindAsync(edit.Id);
+            // if(food == null)
+            //     throw new Exception("Food is not present in the system");
+            // food.EditField = null;
+            // await _context.SaveChangesAsync();
+            await Clients.Others.SendAsync("ReceiveEditComplete", edit);
         }
 
          public async Task SendUpdatedFood(UpdateDto updatedFood)

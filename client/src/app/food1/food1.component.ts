@@ -3,6 +3,7 @@ import { FormBuilder, FormArray, Validators, FormGroup } from "@angular/forms";
 import { FoodService } from "../shared/food.service";
 import { v4 as uuid } from "uuid";
 import { environment } from "src/environments/environment";
+import { IDropdownSettings  } from 'ng-multiselect-dropdown';
 import {
   HubConnection,
   HubConnectionBuilder,
@@ -11,31 +12,40 @@ import {
 import { Pagination, PaginatedResult } from "../model/pagination";
 import { ActivatedRoute } from "@angular/router";
 import { Food } from "../model/food";
-import { filter } from "rxjs/operators";
+import { FilterParams } from '../model/filter';
+
+
+
 
 @Component({
-  selector: "app-food",
-  templateUrl: "./food.component.html",
-  styleUrls: ["./food.component.css"]
+  selector: "app-food1",
+  templateUrl: "./food1.component.html",
+  styleUrls: ["./food1.component.css"]
 })
-export class FoodComponent implements OnInit {
+export class Food1Component implements OnInit {
   foodForm: FormArray = this.fb.array([]);
+  reference: FormArray = this.fb.array([]);
   notification = null;
   editingId;
   categories = [];
   pagination: Pagination;
+  
+  filterParams: FilterParams[] = [];
 
   userParams: any = {};
 
   nameSort = "";
   nameFilter = "";
-  html: string = `
-  <div class="custom-control custom-checkbox my-1 mr-sm-2">
-  <input type="checkbox" class="custom-control-input" id="customControlInline">
-  <label class="custom-control-label" for="customControlInline">Remember my preference</label>
-</div>`;
+  showmutilselectdropdown= false
+ 
+  dropdownList = [];
+  selectedItems = [];
+  dropdownSettings = {};
 
   private _hubConnection: HubConnection;
+
+  private enteredValue;
+  private outValue;
 
   constructor(
     private fb: FormBuilder,
@@ -47,6 +57,17 @@ export class FoodComponent implements OnInit {
     this.foodService.getCategories().subscribe(catgories => {
       this.categories = catgories as [];
     });
+
+    this.dropdownSettings  = {
+      singleSelection: false,
+      idField: 'id',
+      textField: 'item',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 1,
+      allowSearchFilter: true
+    };
+
     this.createConnection();
     this.foodList();
 
@@ -55,6 +76,37 @@ export class FoodComponent implements OnInit {
     this.userParams.orderBy = "name";
   }
 
+  onFilterClick(field: string) {
+    this.showmutilselectdropdown = !this.showmutilselectdropdown;
+    if(this.showmutilselectdropdown && this.dropdownList.length === 0) {
+      //console.log('fetching filter')
+      this.foodService.getFilterDropdown(field).subscribe((data: any) => {
+        //console.log(data);
+        this.dropdownList = data;
+        if(this.selectedItems.length == 0)
+        {
+          this.selectedItems = data
+        }
+      })
+    }
+    
+  }
+  onItemSelect(item: any) {
+    this.filterParams.push(item);
+    console.log(this.filterParams);
+  }
+  onSelectAll(items: any) {
+    //console.log(items);
+  }
+  onItemDeSelect(item: any) {
+    this.filterParams = this.selectedItems;
+    var index = this.filterParams.indexOf(item);
+    if(index> -1)
+    {
+      this.filterParams.splice(index, 1)
+    }
+    console.log(this.filterParams);
+  }
   resetFilters() {
     this.userParams.category = 0;
     this.userParams.nameStartsWith = "";
@@ -82,33 +134,14 @@ export class FoodComponent implements OnInit {
             this.fb.group({
               id: [food.id],
 
-              name: [
-                { value: food.name, disabled: !food.editMode },
-                Validators.required
-              ],
-              category: [
-                { value: food.category, disabled: !food.editMode },
-                Validators.required
-              ],
-              ingrident1: [
-                { value: food.ingrident1, disabled: !food.editMode },
-                Validators.required
-              ],
-              ingrident2: [
-                { value: food.ingrident2, disabled: !food.editMode }
-              ],
-              ingrident3: [
-                { value: food.ingrident3, disabled: !food.editMode }
-              ],
-              ingrident4: [
-                { value: food.ingrident4, disabled: !food.editMode }
-              ],
-              ingrident5: [
-                { value: food.ingrident5, disabled: !food.editMode }
-              ],
-              ingrident6: [
-                { value: food.ingrident6, disabled: !food.editMode }
-              ],
+              name: [food.name, Validators.required],
+              category: [food.category, Validators.required],
+              ingrident1: [food.ingrident1, Validators.required],
+              ingrident2: [food.ingrident2],
+              ingrident3: [food.ingrident3],
+              ingrident4: [food.ingrident4],
+              ingrident5: [food.ingrident5],
+              ingrident6: [food.ingrident6],
               editMode: [food.editMode],
               message: [""]
             })
@@ -128,33 +161,14 @@ export class FoodComponent implements OnInit {
           this.foodForm.push(
             this.fb.group({
               id: [food.id],
-              name: [
-                { value: food.name, disabled: !food.editMode },
-                Validators.required
-              ],
-              category: [
-                { value: food.category, disabled: !food.editMode },
-                Validators.required
-              ],
-              ingrident1: [
-                { value: food.ingrident1, disabled: !food.editMode },
-                Validators.required
-              ],
-              ingrident2: [
-                { value: food.ingrident2, disabled: !food.editMode }
-              ],
-              ingrident3: [
-                { value: food.ingrident3, disabled: !food.editMode }
-              ],
-              ingrident4: [
-                { value: food.ingrident4, disabled: !food.editMode }
-              ],
-              ingrident5: [
-                { value: food.ingrident5, disabled: !food.editMode }
-              ],
-              ingrident6: [
-                { value: food.ingrident6, disabled: !food.editMode }
-              ],
+              name: [food.name, Validators.required],
+              category: [food.category, Validators.required],
+              ingrident1: [food.ingrident1, Validators.required],
+              ingrident2: [food.ingrident2],
+              ingrident3: [food.ingrident3],
+              ingrident4: [food.ingrident4],
+              ingrident5: [food.ingrident5],
+              ingrident6: [food.ingrident6],
               editMode: [food.editMode],
               message: [""]
             })
@@ -217,11 +231,11 @@ export class FoodComponent implements OnInit {
 
         .then(() => {
           this._hubConnection.invoke("SendEditComplete", { id: fg.value.id });
-          this.foodForm.controls.forEach(item => {
-            if (item.value.id === fg.value.id) {
-              item.disable();
-            }
-          });
+          // this.foodForm.controls.forEach(item => {
+          //   if (item.value.id === fg.value.id) {
+          //     item.disable();
+          //   }
+          // });
           fg.patchValue({ editMode: !fg.value.editMode });
           fg.patchValue({ message: "" });
           this.showNotification("update");
@@ -263,7 +277,7 @@ export class FoodComponent implements OnInit {
 
   createConnection() {
     this._hubConnection = new HubConnectionBuilder()
-      .withUrl(environment.baseUrl + "edit")
+      .withUrl(environment.baseUrl + "agedit")
       .build();
     this._hubConnection
       .start()
@@ -271,17 +285,17 @@ export class FoodComponent implements OnInit {
       .catch(err => console.log(err));
 
     this._hubConnection.on("ReceiveEdit", (update: any) => {
-      this.foodForm.controls.forEach(item => {
-        if (item.value.id === update) {
-          item.patchValue({ message: "editing" });
+      this.foodForm.controls.forEach(element => {
+        if (element.value.id === update.id) {
+          element.get(update.field).disable();
         }
       });
     });
 
     this._hubConnection.on("ReceiveEditComplete", (update: any) => {
-      this.foodForm.controls.forEach(item => {
-        if (item.value.id === update) {
-          item.patchValue({ message: "" });
+      this.foodForm.controls.forEach(element => {
+        if (element.value.id === update.id) {
+          element.get(update.field).enable();
         }
       });
     });
@@ -290,23 +304,14 @@ export class FoodComponent implements OnInit {
       this.foodForm.push(
         this.fb.group({
           id: [food.id],
-          name: [
-            { value: food.name, disabled: !food.editMode },
-            Validators.required
-          ],
-          category: [
-            { value: food.category, disabled: !food.editMode },
-            Validators.required
-          ],
-          ingrident1: [
-            { value: food.ingrident1, disabled: !food.editMode },
-            Validators.required
-          ],
-          ingrident2: [{ value: food.ingrident2, disabled: !food.editMode }],
-          ingrident3: [{ value: food.ingrident3, disabled: !food.editMode }],
-          ingrident4: [{ value: food.ingrident4, disabled: !food.editMode }],
-          ingrident5: [{ value: food.ingrident5, disabled: !food.editMode }],
-          ingrident6: [{ value: food.ingrident6, disabled: !food.editMode }],
+          name: [food.name, Validators.required],
+          category: [food.category, Validators.required],
+          ingrident1: [food.ingrident1, Validators.required],
+          ingrident2: [food.ingrident2],
+          ingrident3: [food.ingrident3],
+          ingrident4: [food.ingrident4],
+          ingrident5: [food.ingrident5],
+          ingrident6: [food.ingrident6],
           editMode: [food.editMode],
           message: [""]
         })
@@ -318,52 +323,13 @@ export class FoodComponent implements OnInit {
     });
 
     this._hubConnection.on("RecieveUpdatedFood", (updatedFood: any) => {
-      var index;
-      this.foodForm.controls.forEach(c => {
-        if (c.value.id == updatedFood.id) {
-          index = this.foodForm.controls.indexOf(c);
+      console.log(updatedFood);
+      this.foodForm.controls.forEach(element => {
+        if (element.value.id === updatedFood.id) {
+          console.log("RecieveUpdatedFood");
+          element.patchValue({ ingrident1: updatedFood.ingrident1 })
         }
       });
-      // var index = this.foodForm.controls.indexOf(updatedFood)
-      //console.log(index)
-      this.foodForm.removeAt(index);
-      this.foodForm.insert(
-        index,
-
-        this.fb.group({
-          id: [updatedFood.id],
-          name: [
-            { value: updatedFood.name, disabled: !updatedFood.editMode },
-            Validators.required
-          ],
-          category: [
-            { value: updatedFood.category, disabled: !updatedFood.editMode },
-            ,
-            Validators.required
-          ],
-          ingrident1: [
-            { value: updatedFood.ingrident1, disabled: !updatedFood.editMode },
-            Validators.required
-          ],
-          ingrident2: [
-            { value: updatedFood.ingrident2, disabled: !updatedFood.editMode }
-          ],
-          ingrident3: [
-            { value: updatedFood.ingrident3, disabled: !updatedFood.editMode }
-          ],
-          ingrident4: [
-            { value: updatedFood.ingrident4, disabled: !updatedFood.editMode }
-          ],
-          ingrident5: [
-            { value: updatedFood.ingrident5, disabled: !updatedFood.editMode }
-          ],
-          ingrident6: [
-            { value: updatedFood.ingrident6, disabled: !updatedFood.editMode }
-          ],
-          editMode: [updatedFood.editMode],
-          message: [""]
-        })
-      );
     });
   }
 
@@ -382,23 +348,77 @@ export class FoodComponent implements OnInit {
   headerClicked(field: string) {
     switch (field) {
       case "name":
-          if (this.nameSort === "") {
-            this.nameSort = "asc";
-            this.userParams.orderBy = 'name'
-            this.loadFood();
-          } else if (this.nameSort === "asc") {
-            this.nameSort = "desc";
-            this.loadFood();
-            this.userParams.orderBy = 'name'
-          } else if (this.nameSort === "desc") {
-            this.nameSort = "";
-          }
-        
+        if (this.nameSort === "") {
+          this.nameSort = "asc";
+          this.userParams.orderBy = "name";
+          this.loadFood();
+        } else if (this.nameSort === "asc") {
+          this.nameSort = "desc";
+          this.loadFood();
+          this.userParams.orderBy = "name";
+        } else if (this.nameSort === "desc") {
+          this.nameSort = "";
+        }
+
         break;
-      default: 
+      default:
         console.log("name deosnot match");
         break;
-      
     }
+  }
+
+  onfocus(fg: FormGroup, element: HTMLElement) {
+    console.log("focus");
+    this.enteredValue = fg.value[element.getAttribute("formControlName")];
+    //this.itemId = $event.data.id;
+    this._hubConnection.invoke("SendEdit", {
+      id: fg.value.id,
+      field: element.getAttribute("formControlName"),
+      index: 0
+    });
+  }
+  onBlur(fg: FormGroup, element: HTMLElement) {
+    this.outValue = fg.value[element.getAttribute("formControlName")];
+    if (this.enteredValue != this.outValue) {
+      this._hubConnection
+        .invoke("SendUpdatedFood", {
+          id: fg.value.id,
+          name: fg.value.name,
+          category: +fg.value.category,
+          ingrident1: fg.value.ingrident1,
+          ingrident2: fg.value.ingrident2,
+          ingrident3: fg.value.ingrident3,
+          ingrident4: fg.value.ingrident4,
+          ingrident5: fg.value.ingrident5,
+          ingrident6: fg.value.ingrident6,
+          editMode: fg.value.editMode,
+          editField: fg.value.editField,
+          index: 0
+        })
+        .then(() => {
+          this._hubConnection.invoke("SendEditComplete", {
+            id: fg.value.id,
+            field: element.getAttribute("formControlName"),
+            index: 0
+          });
+        });
+    } else {
+      console.log("Need Not to progress");
+      this._hubConnection.invoke("SendEditComplete", {
+        id: fg.value.id,
+        field: element.getAttribute("formControlName"),
+        index: 0
+      });
+    }
+  }
+
+  // Creates a reference of your initial value
+  createReference(obj: any) {
+    this.reference = Object.assign({}, obj);
+  }
+
+  // Returns true if the user has changed the value in the form
+  isDifferent(obj: any, prop: string) {
+    return this.reference[prop] !== obj[prop];
   }
 }

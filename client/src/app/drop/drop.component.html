@@ -1,0 +1,19 @@
+<div class="drag-conatiner">
+    <div class="example-boundary">
+        <div class="example-box" cdkDragBoundary=".example-boundary" cdkDrag (cdkDragEnded)="onDragEnded($event)"
+        [cdkDragFreeDragPosition]="dragPosition"
+        >
+         1st container
+        </div>
+        <div class="example-box" cdkDragBoundary=".example-boundary" cdkDrag (cdkDragEnded)="onDragEnded1($event)"
+        [cdkDragFreeDragPosition]="dragPosition1"
+        >
+        2nd container
+        </div>
+        <div class="example-box example-box-full" cdkDragBoundary=".example-boundary" cdkDrag (cdkDragEnded)="onDragEnded3($event)"
+        [cdkDragFreeDragPosition]="dragPosition3"
+        >
+        3rd container
+        </div>
+      </div>
+</div>
