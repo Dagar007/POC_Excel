@@ -8,12 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AgGridexampleComponent implements OnInit {
 
-  private gridApi;
-  private gridColumnApi;
+  gridApi;
+  gridColumnApi;
 
-  private rowData;
-  private defaultColDef;
-  private columnDefs;
+  rowData;
+  defaultColDef;
+  columnDefs;
 
   constructor() {
     

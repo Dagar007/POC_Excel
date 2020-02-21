@@ -22,13 +22,13 @@ export class DropComponent implements OnInit {
       this.dragPosition1 = JSON.parse(localStorage.getItem("dragPosition1"));
       localStorage.removeItem("dragPosition1");
     } else {
-      this.dragPosition1 = {x: 200, y: 0};
+      this.dragPosition1 = {x: 0, y: 0};
     }
     if(localStorage.getItem("dragPosition2")){
       this.dragPosition2 = JSON.parse(localStorage.getItem("dragPosition2"));
       localStorage.removeItem("dragPosition2");
     } else {
-      this.dragPosition2 = {x: 0, y: 200};
+      this.dragPosition2 = {x: 0, y: 0};
     }
   
      

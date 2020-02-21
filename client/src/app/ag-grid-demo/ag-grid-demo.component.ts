@@ -17,16 +17,17 @@ import { AgDropdownRendererComponent } from "../ag-dropdown-renderer/ag-dropdown
   styleUrls: ["./ag-grid-demo.component.css"]
 })
 export class AgGridDemoComponent implements OnInit {
-  private gridApi;
-  private gridColumnApi;
-  private columnDefs;
-  private defaultColDef;
-  private editingRowIndex;
+  colState
+  gridApi;
+  gridColumnApi;
+  columnDefs;
+  defaultColDef;
+  editingRowIndex;
   private _hubConnection: HubConnection;
-  private itemId: string;
-  private categoriesName = {};
-  private categories;
-  private frameworkComponents;
+  itemId: string;
+  categoriesName = {};
+   categories;
+   frameworkComponents;
 
   rowData: any;
 
@@ -112,6 +113,8 @@ export class AgGridDemoComponent implements OnInit {
         headerName: "Edit Field",
         field: "editField"
       }
+
+      
     ];
     //this.frameworkComponents = { agColumnHeader: CustomHeader };
     this.defaultColDef = {
@@ -121,6 +124,7 @@ export class AgGridDemoComponent implements OnInit {
       resizable: true,
       editable: this.calculateEditStatus.bind(this)
     };
+
   }
 
   calculateEditStatus(params) {
@@ -137,6 +141,14 @@ export class AgGridDemoComponent implements OnInit {
 
     this.gridColumnApi.setColumnVisible("editMode", false);
     this.gridColumnApi.setColumnVisible("editField", false);
+
+    if (!localStorage.getItem('colstate')) {
+      console.log("no columns state to restore by, you must save state first");
+      return;
+    }
+    console.log(JSON.parse(localStorage.getItem('colstate')))
+    this.gridColumnApi.setColumnState(JSON.parse(localStorage.getItem('colstate')));
+    console.log("column state restored");
   }
 
   updateRow() {
@@ -289,6 +301,27 @@ export class AgGridDemoComponent implements OnInit {
         "</span>"
       );
     }
+  }
+
+  storeState() {
+    this.colState = this.gridColumnApi.getColumnState();
+    localStorage.setItem('colstate',JSON.stringify(this.colState));
+  
+
+  }
+
+  reStoreState() {
+    if (!localStorage.getItem('colstate')) {
+      console.log("no columns state to restore by, you must save state first");
+      return;
+    }
+    console.log(JSON.parse(localStorage.getItem('colstate')))
+    this.gridColumnApi.setColumnState(JSON.parse(localStorage.getItem('colstate')));
+    console.log("column state restored");
+  }
+
+  resetState() {
+    this.gridColumnApi.resetColumnState();
   }
 }
 

@@ -9,11 +9,11 @@ import { FormControl } from '@angular/forms';
  
 })
 export class CustomHeader {
-  private params: any;
+  params: any;
 
-  private ascSort: string;
-  private descSort: string;
-  private noSort: string;
+  ascSort: string;
+  descSort: string;
+  noSort: string;
 
   toppings = new FormControl();
   toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];

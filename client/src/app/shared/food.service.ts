@@ -45,7 +45,6 @@ export class FoodService {
     return this.http.get<Food[]>(environment.baseUrl+'api/food/', {observe: 'response', params})
       .pipe(
         map(response => {
-          console.log(response);
           paginatedResult.result = response.body;
           if(response.headers.get('Pagination') != null) {
             paginatedResult.pagination = JSON.parse(response.headers.get('Pagination'));

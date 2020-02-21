@@ -14,10 +14,10 @@ export class AgDropdownRendererComponent implements ICellRendererAngularComp {
   afterGuiAttached?(params?: import("ag-grid-community").IAfterGuiAttachedParams): void {
     throw new Error("Method not implemented.");
   }
-  private params: any;
+   params: any;
   public value: number;
   public values;
-  private options: any;
+  options: any;
 
 
 
