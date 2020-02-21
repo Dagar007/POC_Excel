@@ -1,0 +1,11 @@
+<div *ngFor="let template of templates;let i = index" >
+    <h5>
+        <a [routerLink]="['/adlayout/template',i+1]" class="templateTab">
+            Template {{i+1}}
+        </a>
+    </h5>    
+    <div class="example-box" *ngFor="let pos of template" 
+        [ngStyle]="{'position': 'relative', 'cursor':'default', 'top.px' : pos.y, 'left.px' : pos.x}">
+        Drag me around
+    </div>
+</div>
