@@ -46,7 +46,7 @@ namespace API
         {
             services.AddControllers();
             services.AddSignalR();
-            services.AddApplicationInsightsTelemetry();
+            ///services.AddApplicationInsightsTelemetry();
 
             services.AddCors(opt =>
             {
