@@ -54,6 +54,15 @@ namespace API.DataAccess
                context.Catgories.AddRange(catgories);
                context.SaveChanges();
             }
+            if (!context.BankAccounts.Any())
+            {
+                var bankAccount = new BankAccount
+                {
+                    Balance = 2000
+                };
+                context.Add(bankAccount);
+                context.SaveChanges();
+            }
         }
     }
 }

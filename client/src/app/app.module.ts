@@ -31,6 +31,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CustomHeader } from './ag-grid-demo/custom-header.component';
 import { Food1Component } from './food1/food1.component';
 import { DropComponent } from './drop/drop.component';
+import { ConcurrencyManagementComponent } from './concurrency-management/concurrency-management.component';
+import { ErrorInterceptorProvider } from './error.interceptor';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,8 @@ import { DropComponent } from './drop/drop.component';
     InGridDemoComponent,
     CustomHeader,
     Food1Component,
-    DropComponent
+    DropComponent,
+    ConcurrencyManagementComponent
   ],
   imports: [
     BrowserModule,
@@ -67,7 +70,7 @@ import { DropComponent } from './drop/drop.component';
     DragDropModule
   ],
   entryComponents: [AgGridCellCustomComponent, AgDropdownRendererComponent],
-  providers: [FoodResolver, CategoryResolver],
+  providers: [FoodResolver, CategoryResolver, ErrorInterceptorProvider],
   bootstrap: [AppComponent]
 })
 export class AppModule {

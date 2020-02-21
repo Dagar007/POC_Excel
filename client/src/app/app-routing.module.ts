@@ -8,6 +8,7 @@ import { AgGridexampleComponent } from './ag-gridexample/ag-gridexample.componen
 import { InGridDemoComponent } from './in-grid-demo/in-grid-demo.component';
 import { Food1Component } from './food1/food1.component';
 import { DropComponent } from './drop/drop.component';
+import { ConcurrencyManagementComponent } from './concurrency-management/concurrency-management.component';
 
 
 const routes: Routes = [
@@ -15,7 +16,8 @@ const routes: Routes = [
   {path: 'ag', component:AgGridDemoComponent,resolve: {foods: FoodResolver ,categories: CategoryResolver}},
   {path: 'given', component: AgGridexampleComponent},
   {path: 'drop', component: DropComponent},
-  {path: 'food',runGuardsAndResolvers:'always', component: Food1Component,resolve: {foods: FoodResolver}}
+  {path: 'food',runGuardsAndResolvers:'always', component: Food1Component,resolve: {foods: FoodResolver}},
+  {path : 'concurrencyCheck', component : ConcurrencyManagementComponent}
 ];
 
 @NgModule({
