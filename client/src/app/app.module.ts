@@ -33,6 +33,8 @@ import { Food1Component } from './food1/food1.component';
 import { DropComponent } from './drop/drop.component';
 import { ConcurrencyManagementComponent } from './concurrency-management/concurrency-management.component';
 import { ErrorInterceptorProvider } from './error.interceptor';
+import { AdLayoutComponent} from './ad-layout/ad-layout.component';
+import { TemplateComponent } from './template/template.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +49,9 @@ import { ErrorInterceptorProvider } from './error.interceptor';
     CustomHeader,
     Food1Component,
     DropComponent,
-    ConcurrencyManagementComponent
+    ConcurrencyManagementComponent,
+    AdLayoutComponent,
+    TemplateComponent
   ],
   imports: [
     BrowserModule,

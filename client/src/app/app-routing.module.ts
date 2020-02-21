@@ -9,6 +9,8 @@ import { InGridDemoComponent } from './in-grid-demo/in-grid-demo.component';
 import { Food1Component } from './food1/food1.component';
 import { DropComponent } from './drop/drop.component';
 import { ConcurrencyManagementComponent } from './concurrency-management/concurrency-management.component';
+import { AdLayoutComponent } from './ad-layout/ad-layout.component';
+import { TemplateComponent } from './template/template.component';
 
 
 const routes: Routes = [
@@ -17,7 +19,9 @@ const routes: Routes = [
   {path: 'given', component: AgGridexampleComponent},
   {path: 'drop', component: DropComponent},
   {path: 'food',runGuardsAndResolvers:'always', component: Food1Component,resolve: {foods: FoodResolver}},
-  {path : 'concurrencyCheck', component : ConcurrencyManagementComponent}
+  {path : 'concurrencyCheck', component : ConcurrencyManagementComponent},
+  {path : 'adlayout', component : AdLayoutComponent},
+  {path: 'adlayout/template/:id', component : TemplateComponent}
 ];
 
 @NgModule({
