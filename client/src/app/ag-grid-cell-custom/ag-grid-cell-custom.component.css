@@ -1,8 +1,0 @@
-.divForLocks {
- display: flex;
- justify-content: flex-start;
- align-items: center;
-}
-.divForLocks__text {
-    margin-left: 1rem;
-}
