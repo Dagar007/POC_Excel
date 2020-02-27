@@ -11,7 +11,6 @@
   },
   "private": true,
   "dependencies": {
-    "@ag-grid-community/all-modules": "^22.1.1",
     "@ag-grid-community/angular": "^22.1.2",
     "@ag-grid-enterprise/all-modules": "^22.1.2",
     "@ag-grid-enterprise/column-tool-panel": "^22.1.2",

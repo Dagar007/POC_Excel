@@ -3,7 +3,6 @@ import { HttpClient } from "@angular/common/http";
 import { AllModules, Module, Grid } from "@ag-grid-enterprise/all-modules";
 import * as _ from 'underscore';
 import "@ag-grid-enterprise/column-tool-panel";
-import { CustomHeaderComponent } from './ag-grid/custom-header/custom-header.component';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +17,6 @@ export class AppComponent {
   private defaultColDef;
   private rowData: [];
   private sidebar;
-  frameworkComponents: { agColumnHeader: any; };
 
   constructor(private http: HttpClient) {
     this.columnDefs = [
