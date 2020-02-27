@@ -16,7 +16,7 @@ namespace API.Controllers
            message.From.Add(new MailboxAddress("POC", "dagardeepak88@gmail.com"));
            message.To.Add(new MailboxAddress("Deepak Dagar", "selfishdeepak@gmail.com"));
 
-           message.Subject = "test email using asp.net core api";
+           message.Subject = "test email using asp.net core api.";
            message.Body = new TextPart("plain")
            {
                Text = "hello world email"
